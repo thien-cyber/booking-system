@@ -21,7 +21,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'], // Tự động load tất cả file .entity.ts
-        synchronize: true, // Lưu ý: Chỉ dùng true khi đang dev, production phải dùng migrations
+        synchronize: configService.get<string>('NODE_ENV') !== 'production', // Lưu ý: Chỉ dùng true khi đang dev, production phải dùng migrations
       }),
     }),
   ],
