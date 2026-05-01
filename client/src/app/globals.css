@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0F172A;
+  --color-surface: #1E293B;
+  --color-primary: #F97316;
+  --color-primaryHover: #EA580C;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-gray-200 min-h-screen flex flex-col;
+  }
+}
