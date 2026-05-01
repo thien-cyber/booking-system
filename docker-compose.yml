@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL - Cơ sở dữ liệu chính
+  postgres:
+    image: postgres:15-alpine
+    container_name: booking_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: ticket_booking_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Lưu trữ data để không bị mất khi tắt container
+
+  # 2. Redis - Bộ nhớ đệm & Xử lý Distributed Lock (Giữ chỗ)
+  redis:
+    image: redis:7-alpine
+    container_name: booking_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # 3. RabbitMQ - Message Queue (Hàng đợi xử lý bất đồng bộ)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: booking_rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"   # Cổng kết nối từ NestJS (AMQP)
+      - "15672:15672" # Cổng giao diện quản trị (Management UI)
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: adminpassword
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+# Định nghĩa các Volumes để dữ liệu được lưu lại vĩnh viễn trên ổ cứng của bạn
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
