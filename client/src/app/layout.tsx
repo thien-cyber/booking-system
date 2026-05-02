@@ -22,15 +22,16 @@ export default function RootLayout({
       <body className={inter.className}>
         <Header />
         {/* Main Content chứa nội dung các trang */}
-        <main className="flex-1 flex flex-col">
-          {children}
-        </main>
+        <main className="flex-1 flex flex-col">{children}</main>
         <Footer />
-        
+
         {/* Cấu hình Toast thông báo góc phải trên */}
-        <Toaster position="top-right" toastOptions={{
-          style: { background: '#333', color: '#fff' }
-        }} />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: { background: "#333", color: "#fff" },
+          }}
+        />
       </body>
     </html>
   );

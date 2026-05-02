@@ -1,11 +1,19 @@
-"use client"; 
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import Cookies from "js-cookie";
 import axiosInstance from "@/libs/axios";
+interface LoginResponse {
+  user: {
+    id: string;
+    email: string;
+    full_name: string;
+    role: string;
+  };
+  message: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,14 +25,15 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Gọi API sang NestJS
-      const res: any = await axiosInstance.post("/auth/login", formData);
+      const res = await axiosInstance.post<any, LoginResponse>(
+        "/auth/login",
+        formData,
+      );
 
-      // Lưu token vào Cookie
-      Cookies.set("access_token", res.access_token, { expires: 1 }); // Lưu 1 ngày
+      localStorage.setItem("user", JSON.stringify(res.user));
 
-      toast.success("Đăng nhập thành công!");
-      router.push("/"); // Chuyển hướng về trang chủ
+      toast.success(res.message || "Đăng nhập thành công!");
+      router.push("/"); // Về trang chủ
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Đăng nhập thất bại");
     } finally {

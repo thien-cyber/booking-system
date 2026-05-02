@@ -1,12 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import cookieParser from 'cookie-parser';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -18,11 +23,18 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.enableCors();
   app.use(cookieParser());
+
+  const configService = app.get(ConfigService);
+  const frontendUrl =
+    configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+
   app.enableCors({
-    origin: 'http://localhost:4200',
-    credentials: true, // Bắt buộc để truyền Cookie
+    origin: frontendUrl,
+    credentials: true,
   });
-  await app.listen(3000);
+
+  const port = configService.get<number>('PORT') || 3000;
+  await app.listen(port);
 }
 
 bootstrap();
