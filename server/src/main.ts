@@ -21,13 +21,16 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new AllExceptionsFilter());
-  app.enableCors();
+  
+  // DÒNG NÀY ĐÃ ĐƯỢC XÓA (app.enableCors() mặc định)
+  
   app.use(cookieParser());
 
   const configService = app.get(ConfigService);
   const frontendUrl =
-    configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+    configService.get<string>('FRONTEND_URL') || 'http://localhost:4200';
 
+  // Cấu hình CORS duy nhất nằm ở đây
   app.enableCors({
     origin: frontendUrl,
     credentials: true,
