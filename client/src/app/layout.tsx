@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,18 +21,20 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className={inter.className}>
-        <Header />
-        {/* Main Content chứa nội dung các trang */}
-        <main className="flex-1 flex flex-col">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Header />
+          {/* Main Content chứa nội dung các trang */}
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
 
-        {/* Cấu hình Toast thông báo góc phải trên */}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: { background: "#333", color: "#fff" },
-          }}
-        />
+          {/* Cấu hình Toast thông báo góc phải trên */}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: { background: "#333", color: "#fff" },
+            }}
+          />
+        </AuthProvider>
       </body>
     </html>
   );

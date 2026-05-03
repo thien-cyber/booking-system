@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import axiosInstance from "@/libs/axios";
+import { useAuth } from "@/contexts/AuthContext";
 interface LoginResponse {
   user: {
     id: string;
@@ -20,20 +21,17 @@ export default function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await axiosInstance.post<any, LoginResponse>(
-        "/auth/login",
-        formData,
-      );
-
-      localStorage.setItem("user", JSON.stringify(res.user));
+      const res = await axiosInstance.post<any, any>("/auth/login", formData);
+      
+      login(res.user); // Lưu vào Context
 
       toast.success(res.message || "Đăng nhập thành công!");
-      router.push("/"); // Về trang chủ
+      router.push("/");
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Đăng nhập thất bại");
     } finally {
